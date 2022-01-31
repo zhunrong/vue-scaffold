@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 const { program } = require('commander');
-const { dev, buildLib } = require('./service');
+const { dev, buildLib, createProject } = require('./service');
 
 program
-  .command('create')
+  .command('create <dir>')
   .description('创建一个项目')
-  .action(async () => {
-    console.log('创建一个项目');
+  .action(async (dir) => {
+    createProject(dir);
   });
 
 program
