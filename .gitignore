@@ -1,0 +1,8 @@
+node_modules
+*.lock
+/libs
+/dev
+/package
+/types
+/babel.config.js
+/tsconfig.json
