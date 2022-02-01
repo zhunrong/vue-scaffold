@@ -1,6 +1,7 @@
-#!/usr/bin/env node
 const { program } = require('commander');
 const { dev, buildLib, createProject } = require('./service');
+
+program.version(require('../package.json').version);
 
 program
   .command('create <dir>')

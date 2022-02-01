@@ -1,11 +1,12 @@
 {
   "name": "@chenzr/vue-scaffold",
-  "version": "0.2.0",
-  "description": "vue scaffold",
+  "version": "0.2.1",
+  "description": "vue 组件开发脚手架",
   "main": "build/service.js",
   "license": "MIT",
   "private": false,
   "files": [
+    "bin",
     "build",
     "boilerplate"
   ],
@@ -35,6 +36,6 @@
     "webpack-merge": "^5.8.0"
   },
   "bin": {
-    "scaffold": "build/main.js"
+    "scaffold": "bin/scaffold.js"
   }
 }
