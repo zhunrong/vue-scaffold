@@ -1,5 +1,5 @@
 const { program } = require('commander');
-const { dev, buildLib, createProject } = require('./service');
+const { dev, build, buildLib, createProject } = require('./service');
 
 program.version(require('../package.json').version);
 
@@ -7,7 +7,7 @@ program
   .command('create <dir>')
   .description('创建一个项目')
   .action(async (dir) => {
-    createProject(dir);
+    await createProject(dir);
   });
 
 program
@@ -19,17 +19,17 @@ program
 
 program
   .command('build')
-  .description('打包示例文件')
-  .action(() => {
-    console.log('打包示例文件');
+  .description('打包 dev 目录代码')
+  .action(async () => {
+    await build();
   });
 
 program
   .command('lib')
+  .description('打包组件代码（package 目录）')
   .option('--name <name>', '库的名称(output.library.name)', 'index')
-  .description('打包组件库')
-  .action((options) => {
-    buildLib(options);
+  .action(async (options) => {
+    await buildLib(options);
   });
 
 program.parse();

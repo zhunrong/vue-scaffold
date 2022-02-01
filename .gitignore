@@ -7,3 +7,4 @@ node_modules
 /babel.config.js
 /tsconfig.json
 /test
+/docs

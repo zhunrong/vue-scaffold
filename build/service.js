@@ -1,14 +1,13 @@
 const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
-const { merge } = require('webpack-merge');
 const fsExtra = require('fs-extra');
 const path = require('path');
-const { devConf, createLibConf } = require('./webpack-config');
+const { createDevConf, createProdConf, createLibConf } = require('./webpack-config');
 const { isDirEmpty, isProjectNameValid } = require('./utils');
 const _ = require('lodash');
 
-exports.dev = async () => {
-  const webpackConf = merge({}, devConf, {});
+const dev = async () => {
+  const webpackConf = createDevConf();
   const compiler = webpack(webpackConf);
   const devServer = {
     ...webpackConf.devServer
@@ -18,24 +17,29 @@ exports.dev = async () => {
   await server.start();
 }
 
-exports.build = async () => { }
+const build = async () => {
+  const webpackConf = createProdConf();
+  const compiler = webpack(webpackConf);
+  compiler.run((err, stats) => {
+    if (err) {
+      throw err;
+    }
+    console.log(stats.toString(webpackConf.stats));
+  })
+}
 
-exports.buildLib = async (options) => {
+const buildLib = async (options) => {
   const webpackConf = createLibConf(options);
   const compiler = webpack(webpackConf);
   compiler.run((err, stats) => {
     if (err) {
       throw err;
     }
-    console.log(stats.toString({
-      assets: true,
-      modules: false,
-      colors: true
-    }));
+    console.log(stats.toString(webpackConf.stats));
   });
 }
 
-exports.createProject = async (dir) => {
+const createProject = async (dir) => {
   const currentDir = process.cwd();
   let targetDir = '';
   let projectName = '';
@@ -78,4 +82,11 @@ exports.createProject = async (dir) => {
   };
   await fsExtra.outputFile(path.resolve(targetDir, 'package.json'), JSON.stringify(packageJson, null, 2));
   console.log(`创建完成：${projectName}:0.1.0`);
+}
+
+module.exports = {
+  dev,
+  build,
+  buildLib,
+  createProject
 }

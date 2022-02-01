@@ -1,9 +1,9 @@
 import component from './component';
 import { PluginObject } from "vue";
 
-type ScrollView = typeof component & PluginObject<void>;
+type ComponentType = typeof component & PluginObject<void>;
 
-const plugin = component as ScrollView;
+const plugin = component as ComponentType;
 
 plugin.install = function (Vue) {
   Vue.component("component-name", component);

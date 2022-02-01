@@ -35,34 +35,53 @@ const baseConf = {
   },
   plugins: [
     new VueLoaderPlugin()
-  ]
+  ],
+  stats: {
+    assets: true,
+    modules: false,
+    colors: true
+  }
 }
 
-const devConf = merge({}, baseConf, {
-  mode: 'development',
-  devtool: 'inline-source-map',
-  entry: path.join(process.cwd(), 'dev/main.ts'),
-  output: {
-    filename: '[name].bundle.js',
-    path: path.join(process.cwd(), 'dist'),
-    clean: true,
-  },
-  devServer: {
-    port: 8080,
-    static: path.join(process.cwd(), 'public')
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, 'template.ejs')
-    })
-  ]
-})
+function createDevConf() {
+  return merge({}, baseConf, {
+    mode: 'development',
+    devtool: 'inline-source-map',
+    entry: path.join(process.cwd(), 'dev/main.ts'),
+    output: {
+      filename: '[name].bundle.js',
+      path: path.join(process.cwd(), 'dist'),
+      clean: true,
+    },
+    devServer: {
+      port: 8080,
+      static: path.join(process.cwd(), 'public')
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: path.resolve(__dirname, 'template.ejs')
+      })
+    ]
+  });
+}
 
-exports.devConf = devConf;
-
-const prodConf = merge({}, baseConf, {})
-
-exports.prodConf = prodConf;
+function createProdConf() {
+  return merge({}, baseConf, {
+    mode: 'production',
+    entry: path.join(process.cwd(), 'dev/main.ts'),
+    output: {
+      filename: '[name].[contenthash:8].js',
+      chunkFilename: "[name].[contenthash:8].js",
+      path: path.join(process.cwd(), 'docs'),
+      clean: true,
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: path.resolve(__dirname, 'template.ejs')
+      })
+    ]
+  });
+}
 
 const customMerge = mergeWithRules({
   module: {
@@ -73,7 +92,7 @@ const customMerge = mergeWithRules({
   }
 });
 
-exports.createLibConf = ({ name }) => {
+function createLibConf({ name }) {
   const entryName = _.kebabCase(name);
   return customMerge({}, baseConf, {
     mode: 'development',
@@ -111,3 +130,9 @@ exports.createLibConf = ({ name }) => {
     }
   });
 };
+
+module.exports = {
+  createDevConf,
+  createProdConf,
+  createLibConf,
+}
