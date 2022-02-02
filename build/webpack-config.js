@@ -125,8 +125,7 @@ function createLibConf({ name }) {
       new MiniCssExtractPlugin()
     ],
     externals: {
-      vue: 'vue',
-      '@juggle/resize-observer': '@juggle/resize-observer'
+      vue: 'vue'
     }
   });
 };

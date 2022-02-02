@@ -3,11 +3,12 @@ const WebpackDevServer = require('webpack-dev-server');
 const fsExtra = require('fs-extra');
 const path = require('path');
 const { createDevConf, createProdConf, createLibConf } = require('./webpack-config');
-const { isDirEmpty, isProjectNameValid } = require('./utils');
+const { isDirEmpty, isProjectNameValid, applyScaffoldConfig } = require('./utils');
 const _ = require('lodash');
 
 const dev = async () => {
   const webpackConf = createDevConf();
+  applyScaffoldConfig(webpackConf, 'dev');
   const compiler = webpack(webpackConf);
   const devServer = {
     ...webpackConf.devServer
@@ -19,6 +20,7 @@ const dev = async () => {
 
 const build = async () => {
   const webpackConf = createProdConf();
+  applyScaffoldConfig(webpackConf, 'build');
   const compiler = webpack(webpackConf);
   compiler.run((err, stats) => {
     if (err) {
@@ -30,6 +32,7 @@ const build = async () => {
 
 const buildLib = async (options) => {
   const webpackConf = createLibConf(options);
+  applyScaffoldConfig(webpackConf, 'lib');
   const compiler = webpack(webpackConf);
   compiler.run((err, stats) => {
     if (err) {
