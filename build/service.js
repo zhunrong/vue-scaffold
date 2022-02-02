@@ -70,6 +70,7 @@ const createProject = async (dir) => {
     }
   }
   await fsExtra.copy(path.resolve(__dirname, '../boilerplate'), targetDir);
+  const version = require('../package.json').version;
   const packageJson = {
     "name": projectName,
     "version": "0.1.0",
@@ -80,7 +81,7 @@ const createProject = async (dir) => {
       "types"
     ],
     "devDependencies": {
-      "@chenzr/vue-scaffold": require('../package.json').version
+      "@chenzr/vue-scaffold": `^${version}`
     }
   };
   await fsExtra.outputFile(path.resolve(targetDir, 'package.json'), JSON.stringify(packageJson, null, 2));

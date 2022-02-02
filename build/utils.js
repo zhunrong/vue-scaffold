@@ -38,8 +38,20 @@ function applyScaffoldConfig(webpackConf, type) {
   }
 }
 
+function parsePackageJson() {
+  const moduleId = path.join(process.cwd(), 'package.json');
+  let json = {};
+  try {
+    json = require(moduleId);
+  } catch (error) {
+    //
+  }
+  return json;
+}
+
 module.exports = {
   isDirEmpty,
   isProjectNameValid,
-  applyScaffoldConfig
+  applyScaffoldConfig,
+  parsePackageJson
 };

@@ -1,50 +1,59 @@
 const path = require('path');
+const webpack = require('webpack');
 const { merge, mergeWithRules } = require('webpack-merge');
 const { VueLoaderPlugin } = require('vue-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const _ = require('lodash');
+const { parsePackageJson } = require('./utils');
 
-const baseConf = {
-  resolve: {
-    extensions: ['.ts', '.tsx', '...'],
-    alias: {
-      '@package': path.join(process.cwd(), 'package/index.ts')
-    }
-  },
-  module: {
-    rules: [
-      {
-        test: /\.(j|t)sx?$/,
-        exclude: /node_modules/,
-        use: ['babel-loader']
-      },
-      {
-        test: /\.scss$/,
-        use: ['vue-style-loader', 'css-loader', 'sass-loader']
-      },
-      {
-        test: /\.css$/,
-        use: ['vue-style-loader', 'css-loader']
-      },
-      {
-        test: /\.vue$/,
-        use: ['vue-loader']
+function createBaseConf() {
+  const package = parsePackageJson();
+  return {
+    resolve: {
+      extensions: ['.ts', '.tsx', '...'],
+      alias: {
+        '@package': path.join(process.cwd(), 'package/index.ts')
       }
-    ]
-  },
-  plugins: [
-    new VueLoaderPlugin()
-  ],
-  stats: {
-    assets: true,
-    modules: false,
-    colors: true
+    },
+    module: {
+      rules: [
+        {
+          test: /\.(j|t)sx?$/,
+          exclude: /node_modules/,
+          use: ['babel-loader']
+        },
+        {
+          test: /\.scss$/,
+          use: ['vue-style-loader', 'css-loader', 'sass-loader']
+        },
+        {
+          test: /\.css$/,
+          use: ['vue-style-loader', 'css-loader']
+        },
+        {
+          test: /\.vue$/,
+          use: ['vue-loader']
+        }
+      ]
+    },
+    plugins: [
+      new VueLoaderPlugin(),
+      new webpack.DefinePlugin({
+        'process.env.VERSION': JSON.stringify(package.version),
+      })
+    ],
+    stats: {
+      assets: true,
+      modules: false,
+      colors: true
+    }
   }
 }
 
 function createDevConf() {
-  return merge({}, baseConf, {
+  const package = parsePackageJson();
+  return merge(createBaseConf(), {
     mode: 'development',
     devtool: 'inline-source-map',
     entry: path.join(process.cwd(), 'dev/main.ts'),
@@ -59,6 +68,7 @@ function createDevConf() {
     },
     plugins: [
       new HtmlWebpackPlugin({
+        title: package.name || '@chenzr/vue-scaffold',
         template: path.resolve(__dirname, 'template.ejs')
       })
     ]
@@ -66,7 +76,8 @@ function createDevConf() {
 }
 
 function createProdConf() {
-  return merge({}, baseConf, {
+  const package = parsePackageJson();
+  return merge(createBaseConf(), {
     mode: 'production',
     entry: path.join(process.cwd(), 'dev/main.ts'),
     output: {
@@ -77,6 +88,7 @@ function createProdConf() {
     },
     plugins: [
       new HtmlWebpackPlugin({
+        title: package.name || '@chenzr/vue-scaffold',
         template: path.resolve(__dirname, 'template.ejs')
       })
     ]
@@ -94,7 +106,7 @@ const customMerge = mergeWithRules({
 
 function createLibConf({ name }) {
   const entryName = _.kebabCase(name);
-  return customMerge({}, baseConf, {
+  return customMerge(createBaseConf(), {
     mode: 'development',
     devtool: 'source-map',
     entry: {
