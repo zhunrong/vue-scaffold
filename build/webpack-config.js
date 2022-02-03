@@ -19,9 +19,44 @@ function createBaseConf() {
     module: {
       rules: [
         {
-          test: /\.(j|t)sx?$/,
+          test: /\.jsx?$/,
           exclude: /node_modules/,
-          use: ['babel-loader']
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                cacheDirectory: true
+              }
+            }
+          ]
+        },
+        {
+          test: /\.ts$/,
+          use: [
+            {
+              loader: 'ts-loader',
+              options: {
+                appendTsSuffixTo: [/\.vue$/]
+              }
+            }
+          ]
+        },
+        {
+          test: /\.tsx$/,
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                cacheDirectory: true
+              }
+            },
+            {
+              loader: 'ts-loader',
+              options: {
+                appendTsxSuffixTo: [/\.vue$/]
+              }
+            }
+          ]
         },
         {
           test: /\.scss$/,
