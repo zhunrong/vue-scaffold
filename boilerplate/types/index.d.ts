@@ -1,4 +1,4 @@
-import { VueConstructor, PluginObject } from "vue";
+import { VueConstructor, PluginObject } from 'vue';
 
 type ComponentType = VueConstructor & PluginObject<void>;
 

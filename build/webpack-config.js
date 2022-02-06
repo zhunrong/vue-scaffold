@@ -6,6 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const _ = require('lodash');
 const { parsePackageJson } = require('./utils');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 function createBaseConf() {
   const package = parsePackageJson();
@@ -34,9 +35,16 @@ function createBaseConf() {
           test: /\.ts$/,
           use: [
             {
+              loader: 'babel-loader',
+              options: {
+                cacheDirectory: true
+              }
+            },
+            {
               loader: 'ts-loader',
               options: {
-                appendTsSuffixTo: [/\.vue$/]
+                appendTsSuffixTo: [/\.vue$/],
+                transpileOnly: true
               }
             }
           ]
@@ -53,7 +61,8 @@ function createBaseConf() {
             {
               loader: 'ts-loader',
               options: {
-                appendTsxSuffixTo: [/\.vue$/]
+                appendTsxSuffixTo: [/\.vue$/],
+                transpileOnly: true
               }
             }
           ]
@@ -73,6 +82,9 @@ function createBaseConf() {
       ]
     },
     plugins: [
+      new ESLintPlugin({
+        extensions: ['js', 'jsx', 'ts', 'tsx', 'vue']
+      }),
       new VueLoaderPlugin(),
       new webpack.DefinePlugin({
         'process.env.VERSION': JSON.stringify(package.version),
