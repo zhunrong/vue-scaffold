@@ -16,7 +16,7 @@ const dev = async () => {
   const server = new WebpackDevServer(devServer, compiler);
 
   await server.start();
-}
+};
 
 const build = async () => {
   const webpackConf = createProdConf();
@@ -27,8 +27,8 @@ const build = async () => {
       throw err;
     }
     console.log(stats.toString(webpackConf.stats));
-  })
-}
+  });
+};
 
 const buildLib = async (options) => {
   const webpackConf = createLibConf(options);
@@ -40,7 +40,7 @@ const buildLib = async (options) => {
     }
     console.log(stats.toString(webpackConf.stats));
   });
-}
+};
 
 const createProject = async (dir) => {
   const currentDir = process.cwd();
@@ -72,25 +72,25 @@ const createProject = async (dir) => {
   await fsExtra.copy(path.resolve(__dirname, '../boilerplate'), targetDir);
   const version = require('../package.json').version;
   const packageJson = {
-    "name": projectName,
-    "version": "0.1.0",
-    "main": "index.js",
-    "license": "MIT",
-    "files": [
-      "libs",
-      "types"
+    'name': projectName,
+    'version': '0.1.0',
+    'main': 'index.js',
+    'license': 'MIT',
+    'files': [
+      'libs',
+      'types'
     ],
-    "devDependencies": {
-      "@chenzr/vue-scaffold": `^${version}`
+    'devDependencies': {
+      '@chenzr/vue-scaffold': `^${version}`
     }
   };
   await fsExtra.outputFile(path.resolve(targetDir, 'package.json'), JSON.stringify(packageJson, null, 2));
   console.log(`创建完成：${projectName}:0.1.0`);
-}
+};
 
 module.exports = {
   dev,
   build,
   buildLib,
   createProject
-}
+};

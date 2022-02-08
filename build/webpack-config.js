@@ -78,6 +78,14 @@ function createBaseConf() {
         {
           test: /\.vue$/,
           use: ['vue-loader']
+        },
+        {
+          test: /\.(png|svg|jpg|jpeg|gif)$/i,
+          type: 'asset/resource',
+        },
+        {
+          test: /\.(woff|woff2|eot|ttf|otf)$/i,
+          type: 'asset/resource',
         }
       ]
     },
@@ -95,7 +103,7 @@ function createBaseConf() {
       modules: false,
       colors: true
     }
-  }
+  };
 }
 
 function createDevConf() {
@@ -111,7 +119,13 @@ function createDevConf() {
     },
     devServer: {
       port: 8080,
-      static: path.join(process.cwd(), 'public')
+      static: path.join(process.cwd(), 'public'),
+      client: {
+        overlay: {
+          errors: true,
+          warnings: false,
+        },
+      },
     },
     plugins: [
       new HtmlWebpackPlugin({
@@ -129,7 +143,7 @@ function createProdConf() {
     entry: path.join(process.cwd(), 'dev/main.ts'),
     output: {
       filename: '[name].[contenthash:8].js',
-      chunkFilename: "[name].[contenthash:8].js",
+      chunkFilename: '[name].[contenthash:8].js',
       path: path.join(process.cwd(), 'docs'),
       clean: true,
     },
@@ -145,7 +159,7 @@ function createProdConf() {
 const customMerge = mergeWithRules({
   module: {
     rules: {
-      test: "match",
+      test: 'match',
       use: 'replace',
     },
   }
@@ -187,10 +201,10 @@ function createLibConf({ name }) {
       vue: 'vue'
     }
   });
-};
+}
 
 module.exports = {
   createDevConf,
   createProdConf,
   createLibConf,
-}
+};
