@@ -20,8 +20,9 @@ program
 program
   .command('build')
   .description('打包 dev 目录代码')
-  .action(async () => {
-    await build();
+  .option('--dest <dir>', '打包输出目录', 'docs')
+  .action(async (options) => {
+    await build(options);
   });
 
 program

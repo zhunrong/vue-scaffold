@@ -18,8 +18,8 @@ const dev = async () => {
   await server.start();
 };
 
-const build = async () => {
-  const webpackConf = createProdConf();
+const build = async (options) => {
+  const webpackConf = createProdConf(options);
   applyScaffoldConfig(webpackConf, 'build');
   const compiler = webpack(webpackConf);
   compiler.run((err, stats) => {

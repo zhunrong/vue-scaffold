@@ -22,6 +22,7 @@
     "@vue/babel-preset-jsx": "^1.2.4",
     "babel-loader": "^8.2.3",
     "commander": "^9.0.0",
+    "copy-webpack-plugin": "^10.2.4",
     "css-loader": "^6.5.1",
     "eslint": "^8.8.0",
     "eslint-plugin-vue": "^8.4.1",
@@ -35,6 +36,7 @@
     "style-loader": "^3.3.1",
     "ts-loader": "^9.2.6",
     "typescript": "^4.5.5",
+    "vue": "^2.6.14",
     "vue-eslint-parser": "^8.2.0",
     "vue-loader": "^15.9.8",
     "vue-template-compiler": "^2.6.14",
@@ -42,9 +44,6 @@
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.7.3",
     "webpack-merge": "^5.8.0"
-  },
-  "peerDependencies": {
-    "vue": "^2.6.14"
   },
   "bin": {
     "scaffold": "bin/scaffold.js"

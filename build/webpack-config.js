@@ -4,6 +4,7 @@ const { merge, mergeWithRules } = require('webpack-merge');
 const { VueLoaderPlugin } = require('vue-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const _ = require('lodash');
 const { parsePackageJson } = require('./utils');
 const ESLintPlugin = require('eslint-webpack-plugin');
@@ -14,8 +15,8 @@ function createBaseConf() {
     resolve: {
       extensions: ['.ts', '.tsx', '...'],
       alias: {
-        '@package': path.join(process.cwd(), 'package/index.ts')
-      }
+        '@package': path.join(process.cwd(), 'package/index.ts'),
+      },
     },
     module: {
       rules: [
@@ -26,10 +27,10 @@ function createBaseConf() {
             {
               loader: 'babel-loader',
               options: {
-                cacheDirectory: true
-              }
-            }
-          ]
+                cacheDirectory: true,
+              },
+            },
+          ],
         },
         {
           test: /\.ts$/,
@@ -37,17 +38,17 @@ function createBaseConf() {
             {
               loader: 'babel-loader',
               options: {
-                cacheDirectory: true
-              }
+                cacheDirectory: true,
+              },
             },
             {
               loader: 'ts-loader',
               options: {
                 appendTsSuffixTo: [/\.vue$/],
-                transpileOnly: true
-              }
-            }
-          ]
+                transpileOnly: true,
+              },
+            },
+          ],
         },
         {
           test: /\.tsx$/,
@@ -55,29 +56,29 @@ function createBaseConf() {
             {
               loader: 'babel-loader',
               options: {
-                cacheDirectory: true
-              }
+                cacheDirectory: true,
+              },
             },
             {
               loader: 'ts-loader',
               options: {
                 appendTsxSuffixTo: [/\.vue$/],
-                transpileOnly: true
-              }
-            }
-          ]
+                transpileOnly: true,
+              },
+            },
+          ],
         },
         {
           test: /\.scss$/,
-          use: ['vue-style-loader', 'css-loader', 'sass-loader']
+          use: ['vue-style-loader', 'css-loader', 'sass-loader'],
         },
         {
           test: /\.css$/,
-          use: ['vue-style-loader', 'css-loader']
+          use: ['vue-style-loader', 'css-loader'],
         },
         {
           test: /\.vue$/,
-          use: ['vue-loader']
+          use: ['vue-loader'],
         },
         {
           test: /\.(png|svg|jpg|jpeg|gif)$/i,
@@ -86,23 +87,23 @@ function createBaseConf() {
         {
           test: /\.(woff|woff2|eot|ttf|otf)$/i,
           type: 'asset/resource',
-        }
-      ]
+        },
+      ],
     },
     plugins: [
       new ESLintPlugin({
-        extensions: ['js', 'jsx', 'ts', 'tsx', 'vue']
+        extensions: ['js', 'jsx', 'ts', 'tsx', 'vue'],
       }),
       new VueLoaderPlugin(),
       new webpack.DefinePlugin({
         'process.env.VERSION': JSON.stringify(package.version),
-      })
+      }),
     ],
     stats: {
       assets: true,
       modules: false,
-      colors: true
-    }
+      colors: true,
+    },
   };
 }
 
@@ -119,40 +120,55 @@ function createDevConf() {
     },
     devServer: {
       port: 8080,
-      static: path.join(process.cwd(), 'public'),
+      historyApiFallback: true,
       client: {
         overlay: {
           errors: true,
           warnings: false,
         },
       },
+      static: {
+        directory: path.join(process.cwd(), 'public'),
+        publicPath: '/public',
+      },
     },
     plugins: [
       new HtmlWebpackPlugin({
         title: package.name || '@chenzr/vue-scaffold',
-        template: path.resolve(__dirname, 'template.ejs')
-      })
-    ]
+        template: path.resolve(__dirname, 'template.ejs'),
+      }),
+    ],
   });
 }
 
-function createProdConf() {
+function createProdConf(options) {
+  const {dest} = options;
   const package = parsePackageJson();
+  const outputDest = path.join(process.cwd(), dest);
   return merge(createBaseConf(), {
     mode: 'production',
     entry: path.join(process.cwd(), 'dev/main.ts'),
     output: {
-      filename: '[name].[contenthash:8].js',
-      chunkFilename: '[name].[contenthash:8].js',
-      path: path.join(process.cwd(), 'docs'),
+      filename: 'js/[name].[contenthash:8].js',
+      chunkFilename: 'js/[name].[contenthash:8].js',
+      assetModuleFilename: 'asset/[name].[contenthash:8][ext]',
+      path: outputDest,
       clean: true,
     },
     plugins: [
       new HtmlWebpackPlugin({
         title: package.name || '@chenzr/vue-scaffold',
-        template: path.resolve(__dirname, 'template.ejs')
-      })
-    ]
+        template: path.resolve(__dirname, 'template.ejs'),
+      }),
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: path.join(process.cwd(), 'public'),
+            to: path.join(outputDest, 'public'),
+          },
+        ],
+      }),
+    ],
   });
 }
 
@@ -162,7 +178,7 @@ const customMerge = mergeWithRules({
       test: 'match',
       use: 'replace',
     },
-  }
+  },
 });
 
 function createLibConf({ name }) {
@@ -171,7 +187,7 @@ function createLibConf({ name }) {
     mode: 'development',
     devtool: 'source-map',
     entry: {
-      [entryName]: path.join(process.cwd(), 'package/index.ts')
+      [entryName]: path.join(process.cwd(), 'package/index.ts'),
     },
     output: {
       filename: '[name].umd.js',
@@ -179,27 +195,25 @@ function createLibConf({ name }) {
       clean: true,
       library: {
         name,
-        type: 'umd'
-      }
+        type: 'umd',
+      },
     },
     module: {
       rules: [
         {
           test: /\.scss$/,
-          use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+          use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
         },
         {
           test: /\.css$/,
-          use: [MiniCssExtractPlugin.loader, 'css-loader']
+          use: [MiniCssExtractPlugin.loader, 'css-loader'],
         },
-      ]
+      ],
     },
-    plugins: [
-      new MiniCssExtractPlugin()
-    ],
+    plugins: [new MiniCssExtractPlugin()],
     externals: {
-      vue: 'vue'
-    }
+      vue: 'vue',
+    },
   });
 }
 
