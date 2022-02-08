@@ -10,6 +10,9 @@
     "build",
     "boilerplate"
   ],
+  "scripts": {
+    "eslint": "eslint **/*.js"
+  },
   "dependencies": {
     "@babel/core": "^7.16.12",
     "@babel/preset-env": "^7.16.11",
@@ -32,7 +35,6 @@
     "style-loader": "^3.3.1",
     "ts-loader": "^9.2.6",
     "typescript": "^4.5.5",
-    "vue": "^2.6.14",
     "vue-eslint-parser": "^8.2.0",
     "vue-loader": "^15.9.8",
     "vue-template-compiler": "^2.6.14",
@@ -40,6 +42,9 @@
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.7.3",
     "webpack-merge": "^5.8.0"
+  },
+  "peerDependencies": {
+    "vue": "^2.6.14"
   },
   "bin": {
     "scaffold": "bin/scaffold.js"
