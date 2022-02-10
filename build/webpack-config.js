@@ -70,7 +70,21 @@ function createBaseConf() {
         },
         {
           test: /\.scss$/,
-          use: ['vue-style-loader', 'css-loader', 'sass-loader'],
+          use: [
+            'vue-style-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                modules: {
+                  mode: 'global',
+                  localIdentName: '[local]__[hash:base64:8]',
+                  exportLocalsConvention: 'camelCaseOnly',
+                }
+              }
+            },
+            'postcss-loader',
+            'sass-loader'
+          ],
         },
         {
           test: /\.css$/,
@@ -142,7 +156,7 @@ function createDevConf() {
 }
 
 function createProdConf(options) {
-  const {dest} = options;
+  const { dest } = options;
   const package = parsePackageJson();
   const outputDest = path.join(process.cwd(), dest);
   return merge(createBaseConf(), {
