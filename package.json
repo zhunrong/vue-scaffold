@@ -1,6 +1,6 @@
 {
   "name": "@chenzr/vue-scaffold",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "vue 组件开发脚手架",
   "main": "build/service.js",
   "license": "MIT",
