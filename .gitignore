@@ -1,9 +1,1 @@
 node_modules
-/libs
-/dev
-/package
-/types
-/babel.config.js
-/tsconfig.json
-/test
-/docs

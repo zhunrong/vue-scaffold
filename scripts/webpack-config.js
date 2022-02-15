@@ -8,7 +8,12 @@ const _ = require('lodash');
 const { parsePackageJson, useHtmlWebpackPlugin } = require('./utils');
 const ESLintPlugin = require('eslint-webpack-plugin');
 
-function createBaseConf() {
+const BASE_OPTIONS = {
+  publicPath: '/'
+};
+
+function createBaseConf(options) {
+  options = Object.assign({}, BASE_OPTIONS, options);
   const package = parsePackageJson();
   return {
     resolve: {
@@ -110,6 +115,7 @@ function createBaseConf() {
       new VueLoaderPlugin(),
       new webpack.DefinePlugin({
         'process.env.VERSION': JSON.stringify(package.version),
+        'process.env.PUBLIC_PATH': JSON.stringify(options.publicPath)
       }),
     ],
     stats: {
@@ -121,7 +127,7 @@ function createBaseConf() {
 }
 
 function createDevConf(options) {
-  return merge(createBaseConf(), {
+  return merge(createBaseConf(options), {
     mode: 'development',
     devtool: 'inline-source-map',
     entry: path.join(process.cwd(), 'dev/main.ts'),
@@ -155,7 +161,7 @@ function createProdConf(options) {
   const { dest } = options;
   const outputDest = path.join(process.cwd(), dest);
   const publicDir = path.join(process.cwd(), 'public');
-  return merge(createBaseConf(), {
+  return merge(createBaseConf(options), {
     mode: 'production',
     entry: path.join(process.cwd(), 'dev/main.ts'),
     output: {
@@ -173,7 +179,7 @@ function createProdConf(options) {
           {
             from: '**/*',
             context: publicDir,
-            filter: (filepath) => path.resolve(filepath) !== path.join(publicDir,'index.html')
+            filter: (filepath) => path.resolve(filepath) !== path.join(publicDir, 'index.html')
           },
         ],
       }),
