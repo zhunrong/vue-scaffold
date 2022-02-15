@@ -13,14 +13,17 @@ program
 program
   .command('dev')
   .description('启动本地开发服务器')
-  .action(async () => {
-    await dev();
+  .option('--port <port>', '监听端口', '8080')
+  .option('--publicPath <publicPath>', '公共路径', '/')
+  .action(async (options) => {
+    await dev(options);
   });
 
 program
   .command('build')
   .description('打包 dev 目录代码')
   .option('--dest <dir>', '打包输出目录', 'docs')
+  .option('--publicPath <publicPath>', '公共路径', '/')
   .action(async (options) => {
     await build(options);
   });
