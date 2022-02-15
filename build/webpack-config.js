@@ -2,11 +2,10 @@ const path = require('path');
 const webpack = require('webpack');
 const { merge, mergeWithRules } = require('webpack-merge');
 const { VueLoaderPlugin } = require('vue-loader');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const _ = require('lodash');
-const { parsePackageJson } = require('./utils');
+const { parsePackageJson, useHtmlWebpackPlugin } = require('./utils');
 const ESLintPlugin = require('eslint-webpack-plugin');
 
 function createBaseConf() {
@@ -121,8 +120,7 @@ function createBaseConf() {
   };
 }
 
-function createDevConf() {
-  const package = parsePackageJson();
+function createDevConf(options) {
   return merge(createBaseConf(), {
     mode: 'development',
     devtool: 'inline-source-map',
@@ -131,9 +129,10 @@ function createDevConf() {
       filename: '[name].bundle.js',
       path: path.join(process.cwd(), 'dist'),
       clean: true,
+      publicPath: options.publicPath || '/'
     },
     devServer: {
-      port: 8080,
+      port: options.port || '8080',
       historyApiFallback: true,
       client: {
         overlay: {
@@ -143,26 +142,24 @@ function createDevConf() {
       },
       static: {
         directory: path.join(process.cwd(), 'public'),
-        publicPath: '/public',
+        publicPath: options.publicPath || '/'
       },
     },
     plugins: [
-      new HtmlWebpackPlugin({
-        title: package.name || '@chenzr/vue-scaffold',
-        template: path.resolve(__dirname, 'template.ejs'),
-      }),
+      useHtmlWebpackPlugin(),
     ],
   });
 }
 
 function createProdConf(options) {
   const { dest } = options;
-  const package = parsePackageJson();
   const outputDest = path.join(process.cwd(), dest);
+  const publicDir = path.join(process.cwd(), 'public');
   return merge(createBaseConf(), {
     mode: 'production',
     entry: path.join(process.cwd(), 'dev/main.ts'),
     output: {
+      publicPath: options.publicPath || '/',
       filename: 'js/[name].[contenthash:8].js',
       chunkFilename: 'js/[name].[contenthash:8].js',
       assetModuleFilename: 'asset/[name].[contenthash:8][ext]',
@@ -170,15 +167,13 @@ function createProdConf(options) {
       clean: true,
     },
     plugins: [
-      new HtmlWebpackPlugin({
-        title: package.name || '@chenzr/vue-scaffold',
-        template: path.resolve(__dirname, 'template.ejs'),
-      }),
+      useHtmlWebpackPlugin(),
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: path.join(process.cwd(), 'public'),
-            to: path.join(outputDest, 'public'),
+            from: '**/*',
+            context: publicDir,
+            filter: (filepath) => path.resolve(filepath) !== path.join(publicDir,'index.html')
           },
         ],
       }),

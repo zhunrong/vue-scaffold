@@ -1,5 +1,7 @@
 const fs = require('fs/promises');
+const fsExtra = require('fs-extra');
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 /**
  * 检查目录是否为空
@@ -49,9 +51,19 @@ function parsePackageJson() {
   return json;
 }
 
+function useHtmlWebpackPlugin() {
+  const package = parsePackageJson();
+  const templatePath = path.join(process.cwd(),'public/index.html');
+  return new HtmlWebpackPlugin({
+    title: package.name || '@chenzr/vue-scaffold',
+    template: fsExtra.pathExistsSync(templatePath) ? templatePath : null,
+  });
+}
+
 module.exports = {
   isDirEmpty,
   isProjectNameValid,
   applyScaffoldConfig,
-  parsePackageJson
+  parsePackageJson,
+  useHtmlWebpackPlugin
 };

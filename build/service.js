@@ -6,8 +6,8 @@ const { createDevConf, createProdConf, createLibConf } = require('./webpack-conf
 const { isDirEmpty, isProjectNameValid, applyScaffoldConfig } = require('./utils');
 const _ = require('lodash');
 
-const dev = async () => {
-  const webpackConf = createDevConf();
+const dev = async (options) => {
+  const webpackConf = createDevConf(options);
   applyScaffoldConfig(webpackConf, 'dev');
   const compiler = webpack(webpackConf);
   const devServer = {
