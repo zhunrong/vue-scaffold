@@ -69,7 +69,7 @@ const createProject = async (dir) => {
       return;
     }
   }
-  await fsExtra.copy(path.resolve(__dirname, '../boilerplate'), targetDir);
+  await fsExtra.copy(path.resolve(__dirname, '../template'), targetDir);
   const version = require('../package.json').version;
   const packageJson = {
     'name': projectName,

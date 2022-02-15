@@ -7,8 +7,8 @@
   "private": false,
   "files": [
     "bin",
-    "build",
-    "boilerplate"
+    "scripts",
+    "template"
   ],
   "scripts": {
     "eslint": "eslint **/*.js"
