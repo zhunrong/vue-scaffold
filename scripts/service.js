@@ -80,6 +80,11 @@ const createProject = async (dir) => {
       'libs',
       'types'
     ],
+    'scripts': {
+      'dev': 'scaffold dev',
+      'build': 'scaffold build',
+      'lib': 'scaffold lib'
+    },
     'devDependencies': {
       '@chenzr/vue-scaffold': `^${version}`
     }
