@@ -24,6 +24,7 @@ program
   .description('打包 dev 目录代码')
   .option('--dest <dir>', '打包输出目录', 'docs')
   .option('--publicPath <publicPath>', '公共路径', '/')
+  .option('--analyze', '打包分析', false)
   .action(async (options) => {
     await build(options);
   });
@@ -32,6 +33,7 @@ program
   .command('lib')
   .description('打包组件代码（package 目录）')
   .option('--name <name>', '库的名称(output.library.name)', 'index')
+  .option('--analyze', '打包分析', false)
   .action(async (options) => {
     await buildLib(options);
   });

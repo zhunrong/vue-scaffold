@@ -7,9 +7,10 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const _ = require('lodash');
 const { parsePackageJson, useHtmlWebpackPlugin } = require('./utils');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 const BASE_OPTIONS = {
-  publicPath: '/'
+  publicPath: '/',
 };
 
 function createBaseConf(options) {
@@ -83,11 +84,11 @@ function createBaseConf(options) {
                   mode: 'global',
                   localIdentName: '[local]__[hash:base64:8]',
                   exportLocalsConvention: 'camelCaseOnly',
-                }
-              }
+                },
+              },
             },
             'postcss-loader',
-            'sass-loader'
+            'sass-loader',
           ],
         },
         {
@@ -115,7 +116,7 @@ function createBaseConf(options) {
       new VueLoaderPlugin(),
       new webpack.DefinePlugin({
         'process.env.VERSION': JSON.stringify(package.version),
-        'process.env.PUBLIC_PATH': JSON.stringify(options.publicPath)
+        'process.env.PUBLIC_PATH': JSON.stringify(options.publicPath),
       }),
     ],
     stats: {
@@ -135,7 +136,7 @@ function createDevConf(options) {
       filename: '[name].bundle.js',
       path: path.join(process.cwd(), 'dist'),
       clean: true,
-      publicPath: options.publicPath || '/'
+      publicPath: options.publicPath || '/',
     },
     devServer: {
       port: options.port || '8080',
@@ -148,19 +149,34 @@ function createDevConf(options) {
       },
       static: {
         directory: path.join(process.cwd(), 'public'),
-        publicPath: options.publicPath || '/'
+        publicPath: options.publicPath || '/',
       },
     },
-    plugins: [
-      useHtmlWebpackPlugin(),
-    ],
+    plugins: [useHtmlWebpackPlugin()],
   });
 }
 
 function createProdConf(options) {
-  const { dest } = options;
+  const { dest,analyze } = options;
   const outputDest = path.join(process.cwd(), dest);
   const publicDir = path.join(process.cwd(), 'public');
+  const plugins = [
+    useHtmlWebpackPlugin(),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: '**/*',
+          context: publicDir,
+          filter: (filepath) =>
+            path.resolve(filepath) !== path.join(publicDir, 'index.html'),
+        },
+      ],
+    }),
+  ];
+  // 打包分析
+  if (analyze) {
+    plugins.push(new BundleAnalyzerPlugin());
+  }
   return merge(createBaseConf(options), {
     mode: 'production',
     entry: path.join(process.cwd(), 'dev/main.ts'),
@@ -172,18 +188,7 @@ function createProdConf(options) {
       path: outputDest,
       clean: true,
     },
-    plugins: [
-      useHtmlWebpackPlugin(),
-      new CopyWebpackPlugin({
-        patterns: [
-          {
-            from: '**/*',
-            context: publicDir,
-            filter: (filepath) => path.resolve(filepath) !== path.join(publicDir, 'index.html')
-          },
-        ],
-      }),
-    ],
+    plugins,
   });
 }
 
@@ -196,8 +201,13 @@ const customMerge = mergeWithRules({
   },
 });
 
-function createLibConf({ name }) {
+function createLibConf({ name, analyze }) {
   const entryName = _.kebabCase(name);
+  const plugins = [new MiniCssExtractPlugin()];
+  // 打包分析
+  if (analyze) {
+    plugins.push(new BundleAnalyzerPlugin());
+  }
   return customMerge(createBaseConf(), {
     mode: 'development',
     devtool: 'source-map',
@@ -225,7 +235,7 @@ function createLibConf({ name }) {
         },
       ],
     },
-    plugins: [new MiniCssExtractPlugin()],
+    plugins,
     externals: {
       vue: 'vue',
     },
