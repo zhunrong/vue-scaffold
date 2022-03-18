@@ -39,6 +39,7 @@ scaffold build
 | --------------------------- | ------- | ------ |
 | --dest \<dir\>              | 输出目录 | docs   |
 | --publicPath \<publicPath\> | 公共路径 | /      |
+| --analyze                   | 打包分析 | false  |
 
 ### 打包组件
 
@@ -50,4 +51,5 @@ scaffold lib
 
 | 参数                        | 说明     | 默认值 |
 | --------------------------- | ------- | ------ |
-| --name \<name\>             | 库的名称 | index   |
+| --name \<name\>             | 库的名称 | index  |
+| --analyze                   | 打包分析 | false  |
