@@ -110,6 +110,7 @@ function createBaseConf(options) {
       ],
     },
     plugins: [
+      new webpack.ProgressPlugin(),
       new ESLintPlugin({
         extensions: ['js', 'jsx', 'ts', 'tsx', 'vue'],
       }),
