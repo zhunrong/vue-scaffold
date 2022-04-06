@@ -16,6 +16,13 @@ const BASE_OPTIONS = {
 function createBaseConf(options) {
   options = Object.assign({}, BASE_OPTIONS, options);
   const package = parsePackageJson();
+  const cssLoaderOptions = {
+    modules: {
+      mode: 'global',
+      localIdentName: '[local]__[hash:base64:8]',
+      exportLocalsConvention: 'camelCaseOnly',
+    },
+  };
   return {
     resolve: {
       extensions: ['.ts', '.tsx', '...'],
@@ -79,17 +86,23 @@ function createBaseConf(options) {
             'vue-style-loader',
             {
               loader: 'css-loader',
-              options: {
-                modules: {
-                  mode: 'global',
-                  localIdentName: '[local]__[hash:base64:8]',
-                  exportLocalsConvention: 'camelCaseOnly',
-                },
-              },
+              options: cssLoaderOptions,
             },
             'postcss-loader',
             'sass-loader',
           ],
+        },
+        {
+          test: /\.less$/,
+          use: [
+            'vue-style-loader',
+            {
+              loader: 'css-loader',
+              options: cssLoaderOptions,
+            },
+            'postcss-loader',
+            'less-loader',
+          ]
         },
         {
           test: /\.css$/,
