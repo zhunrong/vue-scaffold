@@ -16,6 +16,7 @@ const BASE_OPTIONS = {
 function createBaseConf(options) {
   options = Object.assign({}, BASE_OPTIONS, options);
   const package = parsePackageJson();
+  // css-loader options
   const cssLoaderOptions = {
     modules: {
       mode: 'global',
@@ -102,7 +103,7 @@ function createBaseConf(options) {
             },
             'postcss-loader',
             'less-loader',
-          ]
+          ],
         },
         {
           test: /\.css$/,
@@ -110,7 +111,7 @@ function createBaseConf(options) {
         },
         {
           test: /\.vue$/,
-          use: ['vue-loader'],
+          use: ['cache-loader', 'vue-loader'],
         },
         {
           test: /\.(png|svg|jpg|jpeg|gif)$/i,
@@ -167,11 +168,14 @@ function createDevConf(options) {
       },
     },
     plugins: [useHtmlWebpackPlugin()],
+    cache: {
+      type: 'filesystem',
+    },
   });
 }
 
 function createProdConf(options) {
-  const { dest,analyze } = options;
+  const { dest, analyze } = options;
   const outputDest = path.join(process.cwd(), dest);
   const publicDir = path.join(process.cwd(), 'public');
   const plugins = [
