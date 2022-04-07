@@ -1,0 +1,18 @@
+{
+  "name": "<project-name>",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "MIT",
+  "files": [
+    "libs",
+    "types"
+  ],
+  "scripts": {
+    "dev": "scaffold dev",
+    "build": "scaffold build",
+    "lib": "scaffold lib"
+  },
+  "devDependencies": {
+    "@chenzr/vue-scaffold": "<scaffold-version>"
+  }
+}

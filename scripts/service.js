@@ -2,8 +2,16 @@ const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 const fsExtra = require('fs-extra');
 const path = require('path');
-const { createDevConf, createProdConf, createLibConf } = require('./webpack-config');
-const { isDirEmpty, isProjectNameValid, applyScaffoldConfig } = require('./utils');
+const {
+  createDevConf,
+  createProdConf,
+  createLibConf,
+} = require('./webpack-config');
+const {
+  isDirEmpty,
+  isProjectNameValid,
+  applyScaffoldConfig,
+} = require('./utils');
 const _ = require('lodash');
 
 const dev = async (options) => {
@@ -11,7 +19,7 @@ const dev = async (options) => {
   applyScaffoldConfig(webpackConf, 'dev');
   const compiler = webpack(webpackConf);
   const devServer = {
-    ...webpackConf.devServer
+    ...webpackConf.devServer,
   };
   const server = new WebpackDevServer(devServer, compiler);
 
@@ -42,12 +50,12 @@ const buildLib = async (options) => {
   });
 };
 
-const createProject = async (dir) => {
+const createProject = async (dir, options) => {
   const currentDir = process.cwd();
   let targetDir = '';
   let projectName = '';
   if (dir === '.') {
-    if (!await isDirEmpty(currentDir)) {
+    if (!(await isDirEmpty(currentDir))) {
       console.log('当前目录不是空目录！');
       return;
     }
@@ -69,27 +77,22 @@ const createProject = async (dir) => {
       return;
     }
   }
-  await fsExtra.copy(path.resolve(__dirname, '../template'), targetDir);
+  const { template } = options;
+  const templatePath = path.resolve(__dirname, '../templates', template);
+  if (!fsExtra.pathExistsSync(templatePath)) {
+    console.log(`该模板不存在：${template}`);
+    return;
+  }
+  await fsExtra.copy(templatePath, targetDir);
   const version = require('../package.json').version;
-  const packageJson = {
-    'name': projectName,
-    'version': '0.1.0',
-    'main': 'index.js',
-    'license': 'MIT',
-    'files': [
-      'libs',
-      'types'
-    ],
-    'scripts': {
-      'dev': 'scaffold dev',
-      'build': 'scaffold build',
-      'lib': 'scaffold lib'
-    },
-    'devDependencies': {
-      '@chenzr/vue-scaffold': `^${version}`
-    }
-  };
-  await fsExtra.outputFile(path.resolve(targetDir, 'package.json'), JSON.stringify(packageJson, null, 2));
+  const targetPackageJsonPath = path.join(targetDir, 'package.json');
+  let packageJsonString = await fsExtra.readFile(targetPackageJsonPath, {
+    encoding: 'utf-8',
+  });
+  packageJsonString = packageJsonString
+    .replace('<project-name>', projectName)
+    .replace('<scaffold-version>', version);
+  await fsExtra.writeFile(targetPackageJsonPath, packageJsonString);
   console.log(`创建完成：${projectName}:0.1.0`);
 };
 
@@ -97,5 +100,5 @@ module.exports = {
   dev,
   build,
   buildLib,
-  createProject
+  createProject,
 };

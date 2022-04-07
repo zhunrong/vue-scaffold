@@ -16,16 +16,21 @@ yarn global add @chenzr/vue-scaffold
 scaffold create <dir>
 ```
 
+| 参数                    | 说明        | 默认值       |
+| ----------------------- | ---------- | ------------ |
+| --template \<name\>     | 指定模板    | project      |
+
 ### 启动开发服务器
 
 ```bash
 scaffold dev
 ```
 
-| 参数                        | 说明     | 默认值 |
-| --------------------------- | ------- | ------ |
-| --port \<port\>             | 监听端口 | 8080   |
-| --publicPath \<publicPath\> | 公共路径 | /      |
+| 参数                        | 说明        | 默认值       |
+| --------------------------- | ---------- | ------------ |
+| --port \<port\>             | 监听端口    | 8080         |
+| --publicPath \<publicPath\> | 公共路径    | /            |
+| --entry \<path\>            | 入口文件路径 | dev/main.ts |
 
 ### 构建
 
@@ -35,11 +40,12 @@ scaffold dev
 scaffold build
 ```
 
-| 参数                        | 说明     | 默认值 |
-| --------------------------- | ------- | ------ |
-| --dest \<dir\>              | 输出目录 | docs   |
-| --publicPath \<publicPath\> | 公共路径 | /      |
-| --analyze                   | 打包分析 | false  |
+| 参数                        | 说明         | 默认值     |
+| --------------------------- | ----------- | ---------- |
+| --dest \<dir\>              | 输出目录     | docs       |
+| --publicPath \<publicPath\> | 公共路径     | /          |
+| --analyze                   | 打包分析     | false      |
+| --entry \<path\>            | 入口文件路径 | dev/main.ts |
 
 ### 打包组件
 
@@ -49,7 +55,8 @@ scaffold build
 scaffold lib
 ```
 
-| 参数                        | 说明     | 默认值 |
-| --------------------------- | ------- | ------ |
-| --name \<name\>             | 库的名称 | index  |
-| --analyze                   | 打包分析 | false  |
+| 参数                        | 说明         | 默认值           |
+| --------------------------- | ----------- | ---------------- |
+| --name \<name\>             | 库的名称     | index            |
+| --analyze                   | 打包分析     | false            |
+| --entry \<path\>            | 入口文件路径 | package/index.ts |

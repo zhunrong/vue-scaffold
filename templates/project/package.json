@@ -1,0 +1,11 @@
+{
+  "name": "<project-name>",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "scaffold dev --entry src/main.ts",
+    "build": "scaffold build --entry src/main.ts"
+  },
+  "devDependencies": {
+    "@chenzr/vue-scaffold": "<scaffold-version>"
+  }
+}
