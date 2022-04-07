@@ -7,3 +7,8 @@ declare module '*.scss' {
   declare const style: Record<string, string>;
   export default style;
 }
+
+declare module '*.less' {
+  declare const style: Record<string, string>;
+  export default style;
+}

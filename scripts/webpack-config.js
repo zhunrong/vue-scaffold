@@ -146,7 +146,7 @@ function createDevConf(options) {
   return merge(createBaseConf(options), {
     mode: 'development',
     devtool: 'inline-source-map',
-    entry: path.join(process.cwd(), 'dev/main.ts'),
+    entry: path.join(process.cwd(), options.entry),
     output: {
       filename: '[name].bundle.js',
       path: path.join(process.cwd(), 'dist'),
@@ -197,7 +197,7 @@ function createProdConf(options) {
   }
   return merge(createBaseConf(options), {
     mode: 'production',
-    entry: path.join(process.cwd(), 'dev/main.ts'),
+    entry: path.join(process.cwd(), options.entry),
     output: {
       publicPath: options.publicPath || '/',
       filename: 'js/[name].[contenthash:8].js',
@@ -219,7 +219,7 @@ const customMerge = mergeWithRules({
   },
 });
 
-function createLibConf({ name, analyze }) {
+function createLibConf({ name, analyze, entry }) {
   const entryName = _.kebabCase(name);
   const plugins = [new MiniCssExtractPlugin()];
   // 打包分析
@@ -230,7 +230,7 @@ function createLibConf({ name, analyze }) {
     mode: 'development',
     devtool: 'source-map',
     entry: {
-      [entryName]: path.join(process.cwd(), 'package/index.ts'),
+      [entryName]: path.join(process.cwd(), entry),
     },
     output: {
       filename: '[name].umd.js',
